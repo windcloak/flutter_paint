@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -46,6 +48,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // list of points drawn, with offset as coords from top left corner
+  final _offsets = <Offset>[];
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -55,24 +60,42 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+      // appBar: AppBar(
+      //   // Here we take the value from the MyHomePage object that was created by
+      //   // the App.build method, and use it to set our appbar title.
+      //   title: Text(widget.title),
+      // ),
       body: GestureDetector(
-        onPanStart: (details) {
-          print('you tapped');
+        // add the points
+        onPanDown: (details) {
+          final renderBox = context.findRenderObject() as RenderBox; // casting
+          final localPosition = renderBox.globalToLocal(details.globalPosition);
+          print("localPosition: ${localPosition}");
+          setState(() {
+            _offsets.add(localPosition);
+          });
+        },
+        onPanUpdate: (details) {
+          setState(() {
+            final renderBox =
+                context.findRenderObject() as RenderBox; // casting
+            final localPosition =
+                renderBox.globalToLocal(details.globalPosition);
+            _offsets.add(localPosition);
+          });
+        },
+        onPanEnd: (details) {
+          setState(() {
+            _offsets.add(null);
+          });
         },
         child: Center(
           child: CustomPaint(
-            painter: FlipBookPainter(
-              
-            ),
+            painter: Painter(_offsets),
             child: Container(
-              height: 300,
-              width: 300,
-              color: Colors.red[50],
+              // full screen of device
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
             ),
           ),
         ),
@@ -81,13 +104,26 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class FlipBookPainter extends CustomPainter {
+class Painter extends CustomPainter {
+  final offsets;
+  Painter(this.offsets)
+      : super(); // calling super because we're extending CustomPainter
+
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
+    final paint = Paint()
+      ..color = Colors.black
+      ..isAntiAlias = true
+      ..strokeWidth = 3;
+    for (var i = 0; i < offsets.length; i++) {
+      if (offsets[i] != null && offsets[i + 1] != null) {
+        canvas.drawLine(offsets[i], offsets[i + 1], paint);
+      } else if (offsets[i] != null && offsets[i + 1] == null) {
+        canvas.drawPoints(PointMode.points, [offsets[i]], paint);
+      }
+    }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate)  => true;
-
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
