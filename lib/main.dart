@@ -1,6 +1,6 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,6 +51,25 @@ class _MyHomePageState extends State<MyHomePage> {
   // list of points drawn, with offset as coords from top left corner
   final _offsets = <Offset>[];
 
+Widget float1() {
+    return Container(
+      child: FloatingActionButton(
+        onPressed: null,
+        tooltip: 'First button',
+        child: Icon(Icons.add),
+      ),
+    );
+}
+Widget float2() {
+    return Container(
+      child: FloatingActionButton(
+        onPressed: null,
+        tooltip: 'Second button',
+        child: Icon(Icons.add),
+      ),
+    );
+}
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -100,6 +119,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+      floatingActionButton: AnimatedFloatingActionButton(
+        //Fab list
+        fabButtons: <Widget>[
+            float1(), float2()
+        ],
+        colorStartAnimation: Colors.blue,
+        colorEndAnimation: Colors.red,
+        animatedIconData: AnimatedIcons.menu_close //To principal button
+    ),
     );
   }
 }
