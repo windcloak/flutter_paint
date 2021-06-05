@@ -51,24 +51,40 @@ class _MyHomePageState extends State<MyHomePage> {
   // list of points drawn, with offset as coords from top left corner
   final _offsets = <Offset>[];
 
-Widget float1() {
-    return Container(
-      child: FloatingActionButton(
+  List<Widget> fabOption() {
+    return <Widget>[
+      FloatingActionButton(
         onPressed: null,
         tooltip: 'First button',
         child: Icon(Icons.add),
       ),
-    );
-}
-Widget float2() {
-    return Container(
-      child: FloatingActionButton(
+      FloatingActionButton(
         onPressed: null,
         tooltip: 'Second button',
         child: Icon(Icons.add),
       ),
-    );
-}
+    ];
+  }
+
+  // Widget float1() {
+  //   return Container(
+  //     child: FloatingActionButton(
+  //       onPressed: null,
+  //       tooltip: 'First button',
+  //       child: Icon(Icons.add),
+  //     ),
+  //   );
+  // }
+
+  // Widget float2() {
+  //   return Container(
+  //     child: FloatingActionButton(
+  //       onPressed: null,
+  //       tooltip: 'Second button',
+  //       child: Icon(Icons.add),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -120,14 +136,12 @@ Widget float2() {
         ),
       ),
       floatingActionButton: AnimatedFloatingActionButton(
-        //Fab list
-        fabButtons: <Widget>[
-            float1(), float2()
-        ],
-        colorStartAnimation: Colors.blue,
-        colorEndAnimation: Colors.red,
-        animatedIconData: AnimatedIcons.menu_close //To principal button
-    ),
+          //Fab list
+          fabButtons: fabOption(),
+          colorStartAnimation: Colors.blue,
+          colorEndAnimation: Colors.red,
+          animatedIconData: AnimatedIcons.menu_close //To principal button
+          ),
     );
   }
 }
